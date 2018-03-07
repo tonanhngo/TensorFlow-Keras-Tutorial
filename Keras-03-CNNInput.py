@@ -7,6 +7,10 @@ from __future__ import print_function
 
 import keras
 from keras.datasets import mnist
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Conv2D, MaxPooling2D
+from keras.optimizers import RMSprop
 
 # The MNIST data is from the numpy archive file mnist.npz 
 # The data is shuffled and split between a train and test set,
