@@ -1,8 +1,6 @@
 from tensorflow.examples.tutorials.mnist import input_data
 import tensorflow as tf
 
-LOGDIR = './tensorflow_logs/mnist_deep'
-
 def weight_variable(shape):
   """Generates a weight variable of a given shape."""
   initial = tf.truncated_normal(shape, stddev=0.1)
@@ -28,7 +26,6 @@ def main():
     # grayscale -- it would be 3 for an RGB image, 4 for RGBA, etc.
     with tf.name_scope('reshape'):
         x_image = tf.reshape(x, [-1, 28, 28, 1])
-        tf.summary.image('input', x_image, 4)
 
     # Convolutional layer - maps one grayscale image to 32 features.
     with tf.name_scope('conv1'):
@@ -83,7 +80,6 @@ def main():
             tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y),
             name='cross_entropy'
         )
-        tf.summary.scalar('loss', cross_entropy)
 
     # Define our optimizer.
     with tf.name_scope('optimizer'):
@@ -94,7 +90,6 @@ def main():
         correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
         correct_prediction = tf.cast(correct_prediction, tf.float32, name='correct_prediction')
         accuracy = tf.reduce_mean(correct_prediction, name='accuracy')
-        tf.summary.scalar('accuracy', accuracy)
 
     # Launch session.
     sess = tf.InteractiveSession()
@@ -102,18 +97,9 @@ def main():
     # Initialize variables.
     tf.global_variables_initializer().run()
 
-    # Merge all the summary data
-    merged = tf.summary.merge_all()
-
-    # Create summary writer
-    writer = tf.summary.FileWriter(LOGDIR, sess.graph)
-
     # Do the training.
     for i in range(1100):
         batch = mnist.train.next_batch(100)
-        if i % 5 == 0:
-            summary = sess.run(merged, feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
-            writer.add_summary(summary, i)
         if i % 100 == 0:
             train_accuracy = sess.run(accuracy, feed_dict={x:batch[0], y_: batch[1], keep_prob: 1.0})
             print("Step %d, Training Accuracy %g" % (i, float(train_accuracy)))
@@ -123,9 +109,6 @@ def main():
     print("Test Accuracy %g" % sess.run(accuracy, feed_dict={x: mnist.test.images,
                                                              y_: mnist.test.labels,
                                                              keep_prob: 1.0}))
-
-    # Close summary writer
-    writer.close()
 
 
 if __name__ == '__main__':
