@@ -48,7 +48,7 @@ def main():
 
     # Do the training.
     for i in range(1100):
-        batch = mnist.train.next_batch(100)
+        batch = mnist.train.next_batch(1)
         sess.run(train_step, feed_dict={x: batch[0], y_: batch[1]})
 
     # See how model did.
